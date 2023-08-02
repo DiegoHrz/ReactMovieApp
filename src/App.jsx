@@ -1,26 +1,87 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import'./App.css'
+import MovieCard from './MovieCard';
+
+import SearchIcon from './search.svg'
+import './App.css'
 
 
 // const API_URL = 'http://www.omdbapi.com?apikey=772fd908';
 
-// const API_URL = 'http://www.omdbapi.com?apikey=772fd908https://dog.ceo/api/breeds/image/random'
+const url = 'https://moviesdatabase.p.rapidapi.com/titles/series/%7BseriesId%7D';
+const options = {
+	method: 'GET',
+	headers: {
+		'X-RapidAPI-Key': '3dbbbd59d0msh47caed0e006a686p1e1c8ejsn9cf7df155129',
+		'X-RapidAPI-Host': 'moviesdatabase.p.rapidapi.com'
+	}
+};
+
+const movie1 = {
+  "i": {
+      "height": 750,
+      "imageUrl": "https://m.media-amazon.com/images/M/MV5BODg5NDJhMjYtMTYyYi00NzAwLTliNmYtNGZhMjQ4ZjNkMjgyXkEyXkFqcGdeQXVyNTA3MTU2MjE@._V1_.jpg",
+      "width": 1334
+  },
+  "id": "tt6857128",
+  "l": "Unaired Game of Thrones Prequel Pilot",
+  "q": "TV movie",
+  "qid": "tvMovie",
+  "rank": 29261,
+  "s": "Naomi Watts, Miranda Richardson",
+  "y": 2019
+}
+console.log(movie1)
+
 
 const App = () =>{
+  const [movies, setMovies] = useState([])
 
-  const searchMovies = async (title) => {
-    const response = await fetch(`${API_URL}&s${title}`)
+  const searchMovies = async (l) => {
+    const response = await fetch(url, options)
     const data = await response.json();
-    console.log(data)
+
+    setMovies(data.Search);  
   }
 
   useEffect(()=>{
-    searchMovies('Superman')
+    searchMovies('Game of Thrones')
   },[]);
 
   return (
-    <h1>App</h1>
+    <div className='app'>
+      <h1>MovieLand</h1>
+      <div className='search'>
+        <input placeholder='Search for movies'
+        value='Superman' //gives you a static value so you ned to do an onChange;
+        onChange={()=> {}}
+        />
+        <img 
+        src={SearchIcon}
+        alt='search'
+        onClick={() =>{}}
+        />
+      </div>
+      {
+        movies?.length > 0
+        ? (
+          <div className='container'>
+          {movies.map((movie)=>(
+            <MovieCard movie={movie}/>
+          ))}
+        </div>
+        ): 
+        (
+          <div className='empty'>
+            <h2>No movies found</h2>
+          </div>
+        )
+      }
+
+
+
+    </div>
+
   );
 }
 
